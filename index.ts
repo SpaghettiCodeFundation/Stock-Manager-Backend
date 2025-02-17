@@ -14,8 +14,7 @@ app.use(morgan('dev'));
 app.use('/api/v1', router)
 
 const PORT = process.env.PORT || 3001
-console.log(process.env.PORT)
 
-app.listen(PORT, () => {
+app.listen(3000, () => {
   console.log(`http://localhost:${PORT}`)
 })

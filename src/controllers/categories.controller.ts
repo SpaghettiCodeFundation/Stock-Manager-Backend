@@ -1,26 +1,42 @@
 import { Request, Response } from "express";
 import { Prisma, PrismaClient } from "@prisma/client";
-import {getCategories, updateCategory, createCategory, destroyCategory} from "../daos/category.dao";
+import {
+  getCategories,
+  updateCategory,
+  createCategory,
+  destroyCategory,
+  destroyRecordsCategory,
+} from "../daos/category.dao";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export const index = async (req: Request, res: Response) => {
-  const { page, limit } = req.query;
+  const { page, limit, search } = req.query;
+
+  const query: Prisma.CategoryFindManyArgs = {
+    orderBy: { createdAt: "desc" },
+  };
+
+  if (page) query.skip = (Number(page) - 1) * Number(limit);
+  if (limit) query.take = Number(limit);
+
+  if (search && typeof search === "string") {
+    query.where = {
+      ...query.where,
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ],
+    };
+  }
 
   try {
-    const query: Prisma.CategoryFindManyArgs = {
-      orderBy: { createdAt: "desc" },
-    };
-
-    if (page) query.skip = (Number(page) - 1) * Number(limit);
-    if (limit) query.take = Number(limit);
-
     const categories = await getCategories(query);
 
-    const total_page = await prisma.category.count();
+    const total_item = await prisma.category.count();
 
-    const last_page = Math.ceil(total_page / Number(limit));
-    
+    const last_page = Math.ceil(total_item / Number(limit));
+
     const current_page = Number(page);
 
     res.json({
@@ -28,8 +44,8 @@ export const index = async (req: Request, res: Response) => {
       meta: {
         last_page,
         current_page,
-        total_page
-      }
+        total_item,
+      },
     });
   } catch (err) {
     if (err instanceof Error)
@@ -77,6 +93,21 @@ export const destroy = async (req: Request, res: Response) => {
 
   try {
     await destroyCategory(Number(pk));
+
+    res.json({
+      message: "OK",
+    });
+  } catch (err) {
+    if (err instanceof Error)
+      res.status(500).json({ error: err.message as string });
+  }
+};
+
+export const destroy_all = async (req: Request, res: Response) => {
+  const { categories } = req.body;
+
+  try {
+    await destroyRecordsCategory(categories);
 
     res.json({
       message: "OK",

@@ -5,25 +5,24 @@ const prisma = new PrismaClient();
 export const getCategory = async (id: number) => {
   const category = await prisma.category.findFirst({
     where: {
-      id
-    }
+      id,
+    },
   });
 
-  return category 
-}
+  return category;
+};
 
 export const getCategories = async (query: Prisma.CategoryFindManyArgs) => {
   const categories = await prisma.category.findMany(query);
 
-  return categories
-}
+  return categories;
+};
 
 export const createManyCategories = async (
   categories: Array<Prisma.CategoryCreateInput>
 ) => {
   return await prisma.category.createMany({ data: categories });
 };
-
 
 export const createCategory = async (data: Prisma.CategoryCreateInput) => {
   return await prisma.category.create({
@@ -43,9 +42,7 @@ export const updateCategory = async (
   });
 };
 
-export const destroyCategory = async (
-  id: number,
-) => {
+export const destroyCategory = async (id: number) => {
   return await prisma.category.delete({
     where: {
       id,
@@ -53,3 +50,10 @@ export const destroyCategory = async (
   });
 };
 
+export const destroyRecordsCategory = async (categories: Array<number>) => {
+  return await prisma.category.deleteMany({
+    where: {
+      id: { in: categories },
+    },
+  });
+};
