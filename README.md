@@ -11,7 +11,7 @@ Una aplicación de un sistema ERP de administración de stock con Node, TypeScri
 ## Clone el proyecto y ejecutar el proyecto con Docker
 
 ```bash
-  git clone https://github.com/lucianocaetano/StockManager-back.git
+  git clone https://github.com/SpaghettiCodeFundation/Stock-Manager-Backend.git
 ```
 
 Go to the project directory
@@ -48,7 +48,7 @@ Y luego crea registros de prueba en la base de datos
 ## Clone el proyecto y ejecutar el proyecto sin Docker
 
 ```bash
-  git clone https://github.com/lucianocaetano/StockManager-back.git
+  git clone https://github.com/lucianocaetano/SpaghettiCodeFundation/Stock-Manager-Backend.git
 ```
 
 Go to the project directory
